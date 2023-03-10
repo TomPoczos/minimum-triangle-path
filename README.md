@@ -3,16 +3,18 @@ while the code satisfies all requirements, i.e. solves the problem and is capabl
 
 despite my best effort I only managed to get the executable work when a filename is passed to it, i.e. 
 
+```
 cat << EOF | java -jar my.jar
 7
 6 3
 3 8 5
 11 2 10 9
 EOF
+```
 
 wouldn't appear in the args array, which is weird because 
 
-java -jar my.jar 7
+`java -jar my.jar 7`
 
 worked. Probably some weird bash thing no one ever ran into, at least according to google search results.
 
