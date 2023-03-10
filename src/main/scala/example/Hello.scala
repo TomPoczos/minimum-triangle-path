@@ -13,10 +13,14 @@ object Hello extends Greeting with App {
   val preprocessed = preprocessSource(lines)
   println(preprocessed)
 
-  def preprocessSource(source: Source): List[String] = source.getLines().toList.map(_.split( " "))
+  def preprocessSource(source: Source): List[List[Int]] =
+    source
+      .getLines()
+      .toList
+      .map(
+        _.split(" ").toList.map(_.toInt))
 
 }
-
 
 
 trait Greeting {
