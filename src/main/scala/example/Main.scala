@@ -12,9 +12,8 @@ import scala.util.chaining.scalaUtilChainingOps
 // todo change IO to read from standard input at the end
 object Main extends App {
   val lines = Source.fromResource("data_big.txt")
-  val preprocessed = preprocessSource(lines)
-    println(preprocessed.pipe(processGraph))
-
+  val minimumPath = lines.pipe(preprocessSource).pipe(processGraph)
+  println(s"Minimal path is: ${minimumPath.mkString(" + ")} = ${minimumPath.sum}")
   def preprocessSource(source: Source): List[List[Int]] =
     source
       .getLines()
