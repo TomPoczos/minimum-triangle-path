@@ -53,11 +53,18 @@ class HelloSpec extends AnyWordSpec with Matchers {
 
   "processGraph" must {
     "replace all values by the minimum path up to their nodes" in {
+//      val graph = List(
+//        List(List(7), List(8), List(9), List(10)).reverse,
+//        List(List(4), List(5), List(6)),
+//        List(List(2), List(3)).reverse,
+//        List(List(1)),
+//      )
+
       val graph = List(
-        List(List(7), List(8), List(9), List(10)).reverse,
-        List(List(4), List(5), List(6)),
-        List(List(2), List(3)).reverse,
-        List(List(1)),
+        List(7, 8, 9, 10).reverse,
+        List(4, 5, 6),
+        List(2, 3).reverse,
+        List(1),
       )
 
       Hello.processGraph(graph) mustBe List(1, 2, 6, 7)

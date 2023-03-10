@@ -13,9 +13,9 @@ import scala.util.chaining.scalaUtilChainingOps
 object Hello extends Greeting with App {
   val lines = Source.fromResource("data_big.txt")
   val preprocessed = preprocessSource(lines)
-  println(preprocessed.pipe(processGraph))
+    println(preprocessed.pipe(processGraph))
 
-  def preprocessSource(source: Source): List[List[List[Int]]] =
+  def preprocessSource(source: Source): List[List[Int]] =
     source
       .getLines()
       .toList
@@ -23,19 +23,20 @@ object Hello extends Greeting with App {
       .map(
         _.split(" ")
           .toList
-          .map(value => List(value.toInt)))
+          //          .map(value => List(value.toInt))
+          .map(_.toInt)
+      )
 
-  def processGraph(graph: List[List[List[Int]]]) = {
+  def processGraph(graph: List[List[Int]]) = {
 
     val zeroes = List.fill(graph.head.size + 1)(0).map(zero => List(zero))
 
-    val allPaths: (List[List[List[Int]]], List[List[Int]]) = graph.foldLeft((List.empty[List[List[Int]]], zeroes)) {
-      case ((accumulator, previousRow), row) =>
-        val processed = processRow(List.empty, previousRow, row)
-        (accumulator :+ processed, processed)
+    val allPaths = graph.foldLeft(zeroes) {
+      case ((previousRow, row)) =>
+        processRow(List.empty, previousRow, row.map(x => x :: Nil))
     }
 
-    allPaths._1.last.flatMap(_.tail.reverse)
+    allPaths.flatMap(_.tail.reverse)
 
   }
 
