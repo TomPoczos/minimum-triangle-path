@@ -1,19 +1,15 @@
 package example
 
-import cats._
-import cats.data._
-import cats.syntax.all._
-
 import scala.annotation.tailrec
 import scala.collection.:+
 import scala.io.Source
 import scala.util.chaining.scalaUtilChainingOps
 
-// todo change IO to read from standard input at the end
 object Main extends App {
-  val lines = Source.fromResource("data_big.txt")
-  val minimumPath = lines.pipe(preprocessSource).pipe(processGraph)
+
+  val minimumPath = Source.fromFile(args(0)).pipe(preprocessSource).pipe(processGraph)
   println(s"Minimal path is: ${minimumPath.mkString(" + ")} = ${minimumPath.sum}")
+
   def preprocessSource(source: Source): List[List[Int]] =
     source
       .getLines()

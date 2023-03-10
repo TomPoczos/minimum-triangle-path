@@ -1,11 +1,20 @@
 package example
 
+import example.Main.{preprocessSource, processGraph}
+import org.scalatest.concurrent.TimeLimitedTests
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.time.Span
+import org.scalatest.time.SpanSugar._
 import org.scalatest.wordspec.AnyWordSpec
 
 import scala.io.Source
+import scala.util.chaining.scalaUtilChainingOps
 
-class MainSpec extends AnyWordSpec with Matchers {
+class MainSpec extends AnyWordSpec with Matchers with TimeLimitedTests {
+
+  // reliably passes on my PC but this might be dependent on hardware (I'm currently on an 8 years old Intel i7)
+  // feel free to increase to what you would expect on your PC
+  override def timeLimit: Span = 1.minute
 
   "preprocessSource" must {
     "create a nested list of integers from a data source" in {
@@ -58,6 +67,9 @@ class MainSpec extends AnyWordSpec with Matchers {
 
       Main.processGraph(graph) mustBe List(1, 2, 6, 7)
     }
-  }
 
+    "not choke on large graphs" in {
+        Source.fromResource("data_big.txt").pipe(preprocessSource).pipe(processGraph).pipe(println)
+    }
+  }
 }
