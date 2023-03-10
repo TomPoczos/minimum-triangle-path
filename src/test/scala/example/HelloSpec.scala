@@ -29,25 +29,38 @@ class HelloSpec extends AnyWordSpec with Matchers {
 
       "return a list of minimum paths for the given row's elements" in {
         val row = List(
-          List(10),
-          List(20),
-          List(30),
+          List(100),
+          List(200),
+          List(300),
         )
         val previousRow = List(
-          List(1, 2),
-          List(7, 8),
-          List(5, 6),
-          List(3, 4),
+          List(1, 2, 3),
+          List(10, 11, 12),
+          List(7, 8, 9),
+          List(4, 5, 6),
         )
 
         val expected = List(
-          List(1, 2, 10),
-          List(5, 6, 20),
-          List(3, 4, 30),
+          List(1, 2, 3, 100),
+          List(7, 8, 9, 200),
+          List(4, 5, 6, 300),
         )
 
         Hello.processRow(List.empty, previousRow, row) mustBe expected
       }
+    }
+  }
+
+  "processGraph" must {
+    "replace all values by the minimum path up to their nodes" in {
+      val graph = List(
+        List(List(7), List(8), List(9), List(10)).reverse,
+        List(List(4), List(5), List(6)),
+        List(List(2), List(3)).reverse,
+        List(List(1)),
+      )
+
+      Hello.processGraph(graph) mustBe List(1, 2, 6, 7)
     }
   }
 

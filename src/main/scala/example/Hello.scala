@@ -11,9 +11,9 @@ import scala.util.chaining.scalaUtilChainingOps
 
 // todo change IO to read from standard input at the end
 object Hello extends Greeting with App {
-  val lines = Source.fromResource("data_small.txt")
+  val lines = Source.fromResource("data_big.txt")
   val preprocessed = preprocessSource(lines)
-  println(preprocessed)
+  println(preprocessed.pipe(processGraph))
 
   def preprocessSource(source: Source): List[List[List[Int]]] =
     source
@@ -25,29 +25,34 @@ object Hello extends Greeting with App {
           .toList
           .map(value => List(value.toInt)))
 
-  def again(graph: List[List[List[Int]]]) = {
+  def processGraph(graph: List[List[List[Int]]]) = {
 
-    val zeroes = List.fill(0)(graph.head.size + 1).map(zero => List(zero))
+    val zeroes = List.fill(graph.head.size + 1)(0).map(zero => List(zero))
 
-    graph.foldLeft((List.empty, zeroes)) {
-      case ((accumulator, previousRow), row) => ???
+    val allPaths: (List[List[List[Int]]], List[List[Int]]) = graph.foldLeft((List.empty[List[List[Int]]], zeroes)) {
+      case ((accumulator, previousRow), row) =>
+        val processed = processRow(List.empty, previousRow, row)
+        (accumulator :+ processed, processed)
     }
+
+    allPaths._1.last.flatMap(_.tail.reverse)
+
   }
 
   @tailrec
   def processRow(accumulator: List[List[Int]], previousRow: List[List[Int]], row: List[List[Int]]): List[List[Int]] = {
     (previousRow, row) match {
-      case (fstPathPrevRow :: sndPathPrevRow :: restOfprevRow, fstPathRow :: restOfRow) =>
+      case (fstPathPrevRow :: sndPathPrevRow :: restOfPrevRow, fstPathRow :: restOfRow) =>
         if (fstPathPrevRow.sum < sndPathPrevRow.sum)
           processRow(
             accumulator :+ (fstPathPrevRow ::: fstPathRow),
-            sndPathPrevRow :: restOfprevRow,
+            sndPathPrevRow :: restOfPrevRow,
             restOfRow
           )
         else
           processRow(
             accumulator :+ (sndPathPrevRow ::: fstPathRow),
-            sndPathPrevRow :: restOfprevRow,
+            sndPathPrevRow :: restOfPrevRow,
             restOfRow
           )
       case (_, Nil) => accumulator
