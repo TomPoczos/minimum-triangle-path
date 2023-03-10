@@ -1,5 +1,5 @@
 while the code satisfies all requirements, i.e. solves the problem and is capable of processing the provided 
-2000 lines long file in under a minute on my hardware (as evidenced in unit  testing),
+2000 lines long file in under a minute on my hardware (as evidenced in unit testing, including the performance aspect),
 
 despite my best effort I only managed to get the executable work when a filename is passed to it, i.e. 
 
