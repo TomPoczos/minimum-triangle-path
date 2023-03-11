@@ -22,7 +22,7 @@ worked. Probably some weird bash thing no one ever ran into, at least according 
 
 for building the final jar I used the sbt-assembly sbt plugin, you can build the jar using the `assembly` sbt command.
 
-once done, you will find the jar at the usual location (/home/tom/Documents/suprnation/minimum-triangle-path/target/scala-2.13)
+once done, you will find the jar at the usual location ($PROJECT_DIRECTORY/target/scala-2.13)
 
 you can run it by passing a path to your data file to it, in my case it looks like the below, though of course the file's path will
 vary
