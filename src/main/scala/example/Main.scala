@@ -7,7 +7,9 @@ import scala.util.chaining.scalaUtilChainingOps
 
 object Main extends App {
 
-  val minimumPath = Source.fromFile(args(0)).pipe(preprocessSource).pipe(processGraph)
+
+
+  val minimumPath = Source.stdin.pipe(preprocessSource).pipe(processGraph)
   println(s"Minimal path is: ${minimumPath.mkString(" + ")} = ${minimumPath.sum}")
 
   def preprocessSource(source: Source): List[List[Int]] =
