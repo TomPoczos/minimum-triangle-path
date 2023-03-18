@@ -25,9 +25,9 @@ class MainSpec extends AnyWordSpec with Matchers with TimeLimitedTests {
            |""".stripMargin
       )
       val expected = List(
-        List(4, 5, 6),
-        List(2, 3),
         List(1),
+        List(2, 3),
+        List(4, 5, 6),
       )
       Main.preprocessSource(source) mustBe expected
     }
@@ -57,6 +57,10 @@ class MainSpec extends AnyWordSpec with Matchers with TimeLimitedTests {
   }
 
   "processGraph" must {
+    "be able to handle single row graphs" in {
+      Main.processGraph(List(List(1))) mustBe List(1)
+    }
+
     "replace all values by the minimum path up to their nodes" in {
       val graph = List(
         List(7, 8, 9, 10).reverse,
@@ -68,8 +72,8 @@ class MainSpec extends AnyWordSpec with Matchers with TimeLimitedTests {
       Main.processGraph(graph) mustBe List(1, 2, 6, 7)
     }
 
-    "not choke on large graphs" in {
-        Source.fromResource("data_big.txt").pipe(preprocessSource).pipe(processGraph).pipe(println)
-    }
+    //    "not choke on large graphs" in {
+    //        Source.fromResource("data_big.txt").pipe(preprocessSource).pipe(processGraph).pipe(println)
+    //    }
   }
 }

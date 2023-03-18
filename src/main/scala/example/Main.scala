@@ -8,30 +8,19 @@ import scala.util.chaining.scalaUtilChainingOps
 object Main extends App {
 
 
-
   val minimumPath = Source.stdin.pipe(preprocessSource).pipe(processGraph)
   println(s"Minimal path is: ${minimumPath.mkString(" + ")} = ${minimumPath.sum}")
 
   def preprocessSource(source: Source): List[List[Int]] =
-    source
-      .getLines()
-      .toList
-      .reverse
-      .map(
-        _.split(" ")
-          .toList
-          .map(_.toInt)
-      )
+    source.getLines().toList.map(
+      _.split(" ").toList.map(_.toInt))
 
-  def processGraph(graph: List[List[Int]]) = {
-
-    val zeroes = List.fill(graph.head.size + 1)(0).map(zero => List(zero))
-
-    graph.foldLeft(zeroes) {
-      case (previousRow, row) => processRow(List.empty, previousRow, row)
-    }.flatMap(_.tail.reverse) // this line removes the "artificial" zero
-
-  }
+  def processGraph(graph: List[List[Int]]): List[Int] =
+    graph match {
+      case bottom :: rest => rest.foldLeft(bottom.map(List(_))) {
+        case (previousRow, row) => processRow(List.empty, previousRow, row)
+      }.flatMap(_.reverse)
+    }
 
   @tailrec
   def processRow(accumulator: List[List[Int]], previousRow: List[List[Int]], row: List[Int]): List[List[Int]] = {
