@@ -8,7 +8,7 @@ ThisBuild / organizationName := "example"
 lazy val root = (project in file("."))
   .settings(
     name := "minimum-triangle-path",
-    libraryDependencies += scalaTest,
+    libraryDependencies ++= Seq(cats, scalaTest),
     assembly / mainClass := Some("example.Main")
 
   )

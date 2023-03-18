@@ -1,25 +1,29 @@
 package example
 
 import scala.annotation.tailrec
-import scala.collection.:+
 import scala.io.Source
 import scala.util.chaining.scalaUtilChainingOps
 
+import cats._
+import cats.data._
+import cats.syntax.all._
+
 object Main extends App {
-
-
-  val minimumPath = Source.stdin.pipe(preprocessSource).pipe(processGraph)
-  println(s"Minimal path is: ${minimumPath.mkString(" + ")} = ${minimumPath.sum}")
+  Source.stdin.pipe(preprocessSource).pipe(processGraph).pipe {
+    case Left(error) => println(error)
+    case Right(minimumPath) => println(s"Minimal path is: ${minimumPath.mkString(" + ")} = ${minimumPath.sum}")
+  }
 
   def preprocessSource(source: Source): List[List[Int]] =
     source.getLines().toList.map(
       _.split(" ").toList.map(_.toInt))
 
-  def processGraph(graph: List[List[Int]]): List[Int] =
+  def processGraph(graph: List[List[Int]]): Either[String, List[Int]] =
     graph match {
+      case Nil => "there are no paths in an empty triangle".asLeft
       case bottom :: rest => rest.foldLeft(bottom.map(List(_))) {
         case (previousRow, row) => processRow(List.empty, previousRow, row)
-      }.flatMap(_.reverse)
+      }.flatMap(_.reverse).asRight
     }
 
   @tailrec
