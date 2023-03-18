@@ -19,7 +19,7 @@ object Main extends App {
       _.split(" ").toList.map(_.toInt))
 
   def processGraph(graph: List[List[Int]]): Either[String, List[Int]] =
-    graph match {
+    graph.reverse match {
       case Nil => "there are no paths in an empty triangle".asLeft
       case bottom :: rest => rest.foldLeft(bottom.map(List(_))) {
         case (previousRow, row) => processRow(List.empty, previousRow, row)

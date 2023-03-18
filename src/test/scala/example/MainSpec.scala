@@ -63,17 +63,17 @@ class MainSpec extends AnyWordSpec with Matchers with TimeLimitedTests {
 
     "replace all values by the minimum path up to their nodes" in {
       val graph = List(
-        List(7, 8, 9, 10).reverse,
-        List(4, 5, 6),
-        List(2, 3).reverse,
         List(1),
+        List(2, 3).reverse,
+        List(4, 5, 6),
+        List(7, 8, 9, 10).reverse,
       )
 
       Main.processGraph(graph) mustBe List(1, 2, 6, 7)
     }
 
-    //    "not choke on large graphs" in {
-    //        Source.fromResource("data_big.txt").pipe(preprocessSource).pipe(processGraph).pipe(println)
-    //    }
+        "not choke on large graphs" in {
+          Source.fromResource("data_big.txt").pipe(preprocessSource).pipe(processGraph).pipe(println)
+        }
   }
 }
