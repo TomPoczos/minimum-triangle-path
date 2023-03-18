@@ -26,18 +26,8 @@ object Main extends App {
   def processRow(accumulator: List[List[Int]], previousRow: List[List[Int]], row: List[Int]): List[List[Int]] = {
     (previousRow, row) match {
       case (fstPathPrevRow :: sndPathPrevRow :: restOfPrevRow, fstValueRow :: restOfRow) =>
-        if (fstPathPrevRow.sum < sndPathPrevRow.sum)
-          processRow(
-            accumulator :+ (fstPathPrevRow :+ fstValueRow),
-            sndPathPrevRow :: restOfPrevRow,
-            restOfRow
-          )
-        else
-          processRow(
-            accumulator :+ (sndPathPrevRow :+ fstValueRow),
-            sndPathPrevRow :: restOfPrevRow,
-            restOfRow
-          )
+        val appended = if (fstPathPrevRow.sum < sndPathPrevRow.sum) fstPathPrevRow else sndPathPrevRow
+        processRow(accumulator :+ (appended :+ fstValueRow), sndPathPrevRow :: restOfPrevRow, restOfRow)
       case (_, Nil) => accumulator
     }
   }
