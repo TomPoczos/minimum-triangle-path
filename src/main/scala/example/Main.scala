@@ -20,19 +20,21 @@ object Main extends App {
 
   def processGraph(graph: List[List[Int]]): Either[String, List[Int]] =
     graph.reverse match {
-      case Nil => "there are no paths in an empty triangle".asLeft
-      case bottom :: rest => rest.foldLeft(bottom.map(List(_))) {
+      case Nil => "there are no paths in an empty graph".asLeft
+      case bottom :: rest => rest.foldLeft(bottom.map(List(_)).asRight[String]) {
         case (previousRow, row) => processRow(List.empty, previousRow, row)
-      }.flatMap(_.reverse).asRight
+      }.map(_.flatMap(_.reverse))
     }
 
   @tailrec
-  def processRow(accumulator: List[List[Int]], previousRow: List[List[Int]], row: List[Int]): List[List[Int]] = {
+  def processRow(accumulator: List[List[Int]], previousRow: Either[String, List[List[Int]]], row: List[Int]): Either[String, List[List[Int]]] = {
     (previousRow, row) match {
-      case (fstPathPrevRow :: sndPathPrevRow :: restOfPrevRow, fstValueRow :: restOfRow) =>
+      case (error@Left(_), _) => error
+      case (_, Nil) => accumulator.asRight
+      case (Right(fstPathPrevRow :: sndPathPrevRow :: restOfPrevRow), fstValueRow :: restOfRow) =>
         val appended = if (fstPathPrevRow.sum < sndPathPrevRow.sum) fstPathPrevRow else sndPathPrevRow
-        processRow(accumulator :+ (appended :+ fstValueRow), sndPathPrevRow :: restOfPrevRow, restOfRow)
-      case (_, Nil) => accumulator
+        processRow(accumulator :+ (appended :+ fstValueRow), (sndPathPrevRow :: restOfPrevRow).asRight[String], restOfRow)
+      case _ => "Malformed graph".asLeft
     }
   }
 }
