@@ -9,14 +9,15 @@ import cats.data._
 import cats.syntax.all._
 
 object Main extends App {
-  Source.stdin.pipe(preprocessSource).pipe(processGraph).pipe {
+  Source.stdin.pipe(preprocessSource).map(processGraph).foreach {
     case Left(error) => println(error)
     case Right(minimumPath) => println(s"Minimal path is: ${minimumPath.mkString(" + ")} = ${minimumPath.sum}")
   }
 
-  def preprocessSource(source: Source): List[List[Int]] =
-    source.getLines().toList.map(
-      _.split(" ").toList.map(_.toInt))
+  def preprocessSource(source: Source): Either[String, List[List[Int]]] =
+    source.getLines().toList.traverse(
+      _.split(" ").toList.traverse(_.toIntOption))
+      .toRight("graphs can only contain integers")
 
   def processGraph(graph: List[List[Int]]): Either[String, List[Int]] =
     graph.reverse match {

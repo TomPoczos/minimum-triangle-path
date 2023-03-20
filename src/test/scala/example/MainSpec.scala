@@ -21,6 +21,20 @@ class MainSpec extends AnyWordSpec with Matchers with TimeLimitedTests {
   override def timeLimit: Span = 1.minute
 
   "preprocessSource" must {
+    "return a relevant error" when {
+      "the graph contains characters other than integers" in {
+        val source = Source.fromString(
+          """|1
+             |2 X
+             |4 5 6
+             |""".stripMargin
+        )
+        val expected = "graphs can only contain integers".asLeft
+
+        Main.preprocessSource(source) mustBe expected
+      }
+    }
+
     "create a nested list of integers from a data source" in {
       val source = Source.fromString(
         """|1
@@ -32,7 +46,8 @@ class MainSpec extends AnyWordSpec with Matchers with TimeLimitedTests {
         List(1),
         List(2, 3),
         List(4, 5, 6),
-      )
+      ).asRight[String]
+
       Main.preprocessSource(source) mustBe expected
     }
   }
@@ -81,8 +96,8 @@ class MainSpec extends AnyWordSpec with Matchers with TimeLimitedTests {
       Main.processGraph(graph) mustBe List(1, 2, 6, 7).asRight[String]
     }
 
-    //        "not choke on large graphs" in {
-    //          Source.fromResource("data_big.txt").pipe(preprocessSource).pipe(processGraph).pipe(println)
-    //        }
+    "not choke on large graphs" in {
+      Source.fromResource("data_big.txt").pipe(preprocessSource).flatMap(processGraph).pipe(println)
+    }
   }
 }
