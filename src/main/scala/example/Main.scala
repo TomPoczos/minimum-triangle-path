@@ -9,9 +9,7 @@ import cats.data._
 import cats.syntax.all._
 
 object Main extends App {
-
-//  val x: Either[String, List[Int]] = Source.stdin.pipe(preprocessSource).flatMap(processGraph)
-//  val y: Either[String, Either[String, List[Int]]] = Source.stdin.pipe(preprocessSource).map(processGraph)
+  
   Source.stdin.pipe(preprocessSource).flatMap(processGraph) match {
     case Left(error) => println(error)
     case Right(minimumPath) => println(s"Minimal path is: ${minimumPath.mkString(" + ")} = ${minimumPath.sum}")
